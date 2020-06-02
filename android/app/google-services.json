@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "234970772892",
+    "firebase_url": "https://poslabs-demo.firebaseio.com",
+    "project_id": "poslabs-demo",
+    "storage_bucket": "poslabs-demo.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:234970772892:android:3241383726a9930fdb8459",
+        "android_client_info": {
+          "package_name": "com.humbleme.poslabsdemo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "234970772892-t4l12v6bqb0rdimo3mpksd5eeqp4mv2c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA3Wi-0YjjSioBhAp2JR75I8tXngPWUN3k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "234970772892-t4l12v6bqb0rdimo3mpksd5eeqp4mv2c.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "234970772892-njfl9v93ed3at2f5j9horaclrielgmo7.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.humbleme.poslabsdemo"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
