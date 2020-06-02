@@ -1,7 +1,7 @@
 part of 'login_bloc.dart';
 
 /// Represents an Exception thrown during the login process.
-class LoginException implements Exception {
+class LoginException extends Equatable implements Exception {
   /// The platform code, if any (given by some packages like Firebase Auth)
   final String code;
   /// The message describing the exception.
@@ -20,4 +20,7 @@ class LoginException implements Exception {
   String toString() {
     return 'LoginException { code: $code, message: $message }';
   }
+
+  @override
+  List<Object> get props => [code, message];
 }

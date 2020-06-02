@@ -7,33 +7,37 @@ import 'core/services/local_auth_service.dart';
 import 'ui/views/views.dart';
 
 void main() {
-  final app = MultiBlocProvider(
-    providers: [
-      BlocProvider<LoginBloc>(
-        create: (context) => LoginBloc(
-          auth: AuthService(localAuth: LocalAuthService()),
-        )..add(AppLoaded()),
-      ),
-    ],
-    child: MyApp(),
-  );
-
-  runApp(app);
+  runApp(POSLabsDemo());
 }
 
-class MyApp extends StatelessWidget {
+class POSLabsDemo extends StatelessWidget {
+  final AuthService _authService;
+
+  POSLabsDemo({
+    AuthService authService,
+  }) : _authService = authService ?? AuthService(localAuth: LocalAuthService());
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'POS Labs Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<LoginBloc>(
+          create: (context) => LoginBloc(
+            auth: _authService,
+          )..add(AppLoaded()),
+        ),
+      ],
+      child: MaterialApp(
+        title: 'POS Labs Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+        ),
+        routes: {
+          '/': (context) => LoginView(),
+          '/map': (context) => MapView(),
+        },
       ),
-      routes: {
-        '/': (context) => LoginView(),
-        '/map': (context) => MapView(),
-      },
     );
   }
 }

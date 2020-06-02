@@ -17,11 +17,11 @@ class LoginView extends StatelessWidget {
             if (state is LoginSuccess) {
               Navigator.of(context).pushNamed('/map');
 
-              // Wait til Navigator navigates to the next route, then
+              // Wait 'til Navigator navigates to the next route, then
               // reset the view for if users navigate back to this page.
               //
-              // Adding the event to the Bloc before the Navigator transitions
-              // fully causes the initial page to flash for a second during
+              // Adding this event to the Bloc before the Navigator transitions
+              // fully will cause the initial page to flash for a few frames during
               // transition. This doesn't look great.
               Future.delayed(const Duration(milliseconds: 500)).then((_) {
                 BlocProvider.of<LoginBloc>(context).add(LoginCleared());

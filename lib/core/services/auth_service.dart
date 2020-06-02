@@ -27,11 +27,12 @@ class AuthService {
     // Calling `getAvailableBiometric` is not supported on all versions of Android.
     // Full support of an adaptive UI based off the value of this call on Android would require
     // more information about the platform and device.
-    if (!Platform.isIOS) {
-      return BiometricType.None;
-    }
     if (_availableBiometricType == null) {
-      _availableBiometricType = await _localAuth.getAvailableBiometric();
+      try {
+        _availableBiometricType = await _localAuth.getAvailableBiometric();
+      } catch (e) {
+        _availableBiometricType = BiometricType.None;
+      }
     }
     return _availableBiometricType;
   }

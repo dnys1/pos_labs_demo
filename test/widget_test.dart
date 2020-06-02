@@ -7,24 +7,35 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
+import 'package:pos_labs_demo/core/enums/biometric_type.dart';
 
+import 'package:pos_labs_demo/core/services/auth_service.dart';
 import 'package:pos_labs_demo/main.dart';
 
+class MockAuthService extends Mock implements AuthService {}
+
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(MyApp());
+  MockAuthService _auth;
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  setUp(() {
+    _auth = MockAuthService();
+  });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+  group('Appropriate number of buttons', () {
+    testWidgets('| No Biometrics', (WidgetTester tester) async {
+      // Setup mock services for proper bloc flow
+      when(_auth.availableBiometricType)
+          .thenAnswer((_) async => BiometricType.None);
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+      // Build our app and trigger a frame.
+      await tester.pumpWidget(POSLabsDemo(authService: _auth));
+
+      // Wait until no more frames are scheduled (true when loading complete)
+      await tester.pumpAndSettle();
+
+      // Make sure there are exactly 1 RaisedButton (no login with Touch/Face ID)
+      expect(find.byType(RaisedButton), findsOneWidget);
+    });
   });
 }
