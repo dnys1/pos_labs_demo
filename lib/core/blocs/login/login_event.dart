@@ -7,6 +7,7 @@ abstract class LoginEvent extends Equatable {
   List<Object> get props => [];
 }
 
+/// Loads the login configuration upon app loading.
 class AppLoaded extends LoginEvent {}
 
 /// Initiates a new login request.

@@ -22,15 +22,10 @@ if (flutterVersionName == null) {
 }
 
 apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
     compileSdkVersion 28
-
-    sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
-    }
 
     lintOptions {
         disable 'InvalidPackage'
@@ -38,7 +33,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.humbleme.pos_labs_demo"
+        applicationId "com.humbleme.poslabsdemo"
         minSdkVersion 16
         targetSdkVersion 28
         versionCode flutterVersionCode.toInteger()
@@ -56,11 +51,6 @@ android {
 
 flutter {
     source '../..'
-}
-
-dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'com.facebook.android:facebook-android-sdk:[5,6)'
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:meta/meta.dart';
@@ -19,8 +21,15 @@ class AuthService {
 
   /// Cache the available biometric type
   BiometricType _availableBiometricType;
+  
   /// The available biometric type for the current device
   Future<BiometricType> get availableBiometricType async {
+    // Calling `getAvailableBiometric` is not supported on all versions of Android.
+    // Full support of an adaptive UI based off the value of this call on Android would require
+    // more information about the platform and device.
+    if (!Platform.isIOS) {
+      return BiometricType.None;
+    }
     if (_availableBiometricType == null) {
       _availableBiometricType = await _localAuth.getAvailableBiometric();
     }
