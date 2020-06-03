@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 
 import '../enums/biometric_type.dart';
@@ -7,6 +8,7 @@ import 'local_auth_service.dart';
 
 /// Service for handling authentication requests with server and local authentication.
 class AuthService {
+  static final Logger _logger = Logger('AuthService');
   static final FirebaseAuth _auth = FirebaseAuth.instance;
   static final FacebookLogin _facebookLogin = FacebookLogin();
 
@@ -32,11 +34,13 @@ class AuthService {
         _availableBiometricType = BiometricType.None;
       }
     }
+    _logger.finer('availableBiometricType: Available biometric type ($_availableBiometricType)');
     return _availableBiometricType;
   }
 
   /// Login using local authentication (Face ID/Touch ID)
   Future<bool> initiateBiometricLogin() async {
+    _logger.finer('initiateBiometricLogin');
     return _localAuth.initiateBiometricLogin();
   }
 
@@ -44,6 +48,8 @@ class AuthService {
   Future<bool> initiateFacebookLogin() async {
     // Login using Facebook webview
     final loginResult = await _facebookLogin.logIn(['email']);
+    _logger.finer('initiateFacebookLogin: loginResult', loginResult);
+    _logger.finer('initiateFacebookLogin: status ${loginResult.status}');
 
     switch (loginResult.status) {
       case FacebookLoginStatus.loggedIn:

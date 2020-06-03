@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/services.dart';
+import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 
 import '../../models/models.dart';
@@ -15,6 +16,8 @@ part 'login_method.dart';
 
 /// Handles requests for authenticating the user.
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
+  static final Logger _logger = Logger('LoginBloc');
+
   AuthService _auth;
 
   LoginBloc({@required AuthService auth}) {
@@ -45,6 +48,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   /// Login the user using [AuthenticationService]
   Stream<LoginState> _mapLoginInitiatedToState({LoginMethod method}) async* {
     yield LoginLoading();
+    _logger
+        .fine('_mapLoginInitiatedToState: Logging in user for method $method');
 
     try {
       bool didLoginSuccessfully;
@@ -63,6 +68,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         // Direct users to login screen if unsuccessful
         yield LoginInitial(biometricType: await _auth.availableBiometricType);
       }
+
+      _logger.fine(
+          '_mapLoginInitiatedToState: Login ${didLoginSuccessfully ? "was" : "was not"} successful');
     } on PlatformException catch (e) {
       yield LoginFailure(
         exception: LoginException(
@@ -70,10 +78,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           code: e.code,
         ),
       );
+      _logger.severe('_mapLoginInitiatedToState: $e');
     } on LoginException catch (e) {
       yield LoginFailure(exception: e);
+      _logger.severe('_mapLoginInitiatedToState: $e');
     } catch (e) {
       yield LoginFailure.unknown();
+      _logger.severe('_mapLoginInitiatedToState: $e');
     }
   }
 }

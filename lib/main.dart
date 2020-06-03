@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_google_maps/flutter_google_maps.dart';
+import 'package:logging/logging.dart';
 
 import 'core/blocs/delegate.dart';
 import 'core/blocs/login/login_bloc.dart';
@@ -18,6 +19,12 @@ void main() {
 
   // Initialize the BlocDelegate
   BlocSupervisor.delegate = CustomBlocDelegate();
+
+  // Setup logging
+  Logger.root.level = Level.ALL;
+  Logger.root.onRecord.listen((record) {
+    print('[${record.level.name}]: ${record.loggerName} -- ${record.message}');
+  });
 
   runApp(POSLabsDemo());
 }

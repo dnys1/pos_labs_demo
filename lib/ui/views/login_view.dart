@@ -66,6 +66,20 @@ class _LoginBody extends StatelessWidget {
     @required this.biometricType,
   }) : super(key: key);
 
+  /// The label for the biometrics login button
+  String get biometricsLabel {
+    if (Platform.isAndroid || biometricType == BiometricType.None) {
+      return 'Login with Biometrics';
+    } else {
+      return 'Login with ${biometricType.string} ID';
+    }
+  }
+
+  /// Whether or not the biometrics button is enabled.
+  /// This will be false on the iOS simulator, for example.
+  bool get biometricsEnabled =>
+      Platform.isAndroid || biometricType != BiometricType.None;
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -80,24 +94,17 @@ class _LoginBody extends StatelessWidget {
                 .add(LoginInitiated(method: LoginMethod.Facebook));
           },
         ),
-        // Android will return BiometricType.None
-        // Show Biometrics button anyway. It will 
-        // default to the correct biometric type 
-        // for the device.
-        if (Platform.isAndroid ||
-            biometricType != BiometricType.None) ...[
-          SizedBox(height: 20),
-          RaisedButton(
-            key: Keys.loginWithBiometricsButton,
-            child: Text(Platform.isIOS
-                ? 'Login with ${biometricType.string} ID'
-                : 'Login with Biometrics'),
-            onPressed: () {
-              BlocProvider.of<LoginBloc>(context)
-                  .add(LoginInitiated(method: LoginMethod.Local));
-            },
-          ),
-        ],
+        SizedBox(height: 20),
+        RaisedButton(
+          key: Keys.loginWithBiometricsButton,
+          child: Text(biometricsLabel),
+          onPressed: biometricsEnabled
+              ? () {
+                  BlocProvider.of<LoginBloc>(context)
+                      .add(LoginInitiated(method: LoginMethod.Local));
+                }
+              : null,
+        ),
         SizedBox(height: 20),
         BlocConsumer<PushNotificationsBloc, PushNotificationsState>(
           listener: (context, state) {
