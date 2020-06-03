@@ -5,13 +5,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../core/enums/biometric_type.dart';
 import '../../core/blocs/login/login_bloc.dart';
+import '../../core/blocs/push_notifications/push_notifications_bloc.dart';
 import '../keys.dart';
 import '../widgets/widgets.dart';
 
 class LoginView extends StatelessWidget {
+  static final _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       body: Padding(
         padding: const EdgeInsets.all(15.0),
         child: BlocConsumer<LoginBloc, LoginState>(
@@ -48,7 +52,8 @@ class LoginView extends StatelessWidget {
                           .add(LoginInitiated(method: LoginMethod.Facebook));
                     },
                   ),
-                  if (Platform.isIOS && state.biometricType != BiometricType.None) ...[
+                  if (Platform.isIOS &&
+                      state.biometricType != BiometricType.None) ...[
                     SizedBox(height: 20),
                     RaisedButton(
                       key: Keys.loginWithBiometricsButton,
@@ -60,6 +65,49 @@ class LoginView extends StatelessWidget {
                       },
                     ),
                   ],
+                  SizedBox(height: 20),
+                  BlocConsumer<PushNotificationsBloc, PushNotificationsState>(
+                    listener: (context, state) {
+                      // Show a SnackBar when a push notification is received
+                      if (state is PushNotificationLoaded) {
+                        Scaffold.of(context).showSnackBar(SnackBar(
+                          duration: const Duration(seconds: 5),
+                          content: Text('Push notification received'),
+                          action: SnackBarAction(
+                            label: 'Show data',
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                child: PushNotificationsDialog(state.data),
+                              );
+                            },
+                          ),
+                        ));
+                      }
+                    },
+                    builder: (context, state) {
+                      bool buttonEnabled;
+                      if (state is PushNotificationsInitial ||
+                          state is PushNotificationLoaded) {
+                        buttonEnabled = true;
+                      } else if (state is PushNotificationLoading) {
+                        buttonEnabled = false;
+                      } else {
+                        throw UnimplementedError(
+                            'Invalid PushNotificationsState: $state');
+                      }
+                      return RaisedButton(
+                        key: Keys.requestPushNotificationButton,
+                        child: Text('Request Push Notification'),
+                        onPressed: buttonEnabled
+                            ? () {
+                                BlocProvider.of<PushNotificationsBloc>(context)
+                                    .add(PushNotificationsRequest());
+                              }
+                            : null,
+                      );
+                    },
+                  ),
                 ],
               );
             } else if (state is LoginFailure) {

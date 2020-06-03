@@ -35,6 +35,7 @@ dependencies:
   flutter_bloc: ^4.0.0
   flutter_facebook_login: ^3.0.0
   flutter_google_maps: ^3.7.1
+  firebase_messaging: ^6.0.16
   local_auth: ^0.6.2
   location: ^3.0.2
 
