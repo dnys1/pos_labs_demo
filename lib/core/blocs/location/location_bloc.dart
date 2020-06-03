@@ -10,6 +10,7 @@ import '../../services/location_service.dart';
 part 'location_event.dart';
 part 'location_state.dart';
 
+/// Handles requests for the user's location
 class LocationBloc extends Bloc<LocationEvent, LocationState> {
   LocationService _locationService;
 

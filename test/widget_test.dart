@@ -12,6 +12,8 @@ import 'package:pos_labs_demo/core/enums/biometric_type.dart';
 
 import 'package:pos_labs_demo/core/services/auth_service.dart';
 import 'package:pos_labs_demo/main.dart';
+import 'package:pos_labs_demo/ui/keys.dart';
+import 'package:pos_labs_demo/ui/widgets/widgets.dart';
 
 class MockAuthService extends Mock implements AuthService {}
 
@@ -22,20 +24,44 @@ void main() {
     _auth = MockAuthService();
   });
 
+  Future<void> buildLoginView(WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(POSLabsDemo(authService: _auth));
+
+    // Wait until no more frames are scheduled (true when loading complete)
+    await tester.pumpAndSettle();
+  }
+
   group('Appropriate number of buttons', () {
     testWidgets('| No Biometrics', (WidgetTester tester) async {
       // Setup mock services for proper bloc flow
       when(_auth.availableBiometricType)
           .thenAnswer((_) async => BiometricType.None);
 
-      // Build our app and trigger a frame.
-      await tester.pumpWidget(POSLabsDemo(authService: _auth));
-
-      // Wait until no more frames are scheduled (true when loading complete)
-      await tester.pumpAndSettle();
+      // Build the login view
+      await buildLoginView(tester);
 
       // Make sure there are exactly 1 RaisedButton (no login with Touch/Face ID)
-      expect(find.byType(RaisedButton), findsOneWidget);
+      expect(find.byKey(Keys.loginWithFacebookButton), findsOneWidget);
+    });
+
+    testWidgets('| Exception thrown', (WidgetTester tester) async {
+      // Setup mock services for proper bloc flow
+      when(_auth.availableBiometricType)
+          .thenAnswer((_) async => BiometricType.None);
+      when(_auth.initiateFacebookLogin()).thenThrow(Exception());
+
+      // Build the login view
+      await buildLoginView(tester);
+
+      // Tap the Login button
+      await tester.tap(find.byKey(Keys.loginWithFacebookButton));
+
+      // Rebuild the widget after the state has changed
+      await tester.pump();
+
+      // Expect to find an ExceptionView
+      expect(find.byType(ExceptionView), findsOneWidget);
     });
   });
 }

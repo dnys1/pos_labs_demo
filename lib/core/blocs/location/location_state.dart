@@ -10,7 +10,7 @@ abstract class LocationState extends Equatable {
 /// Loading the user's current location
 class LocationLoading extends LocationState {}
 
-/// Loaded the user's current location
+/// Successfully loaded the user's current location
 class LocationLoaded extends LocationState {
   /// The user's current location
   final Location userLocation;
@@ -28,6 +28,7 @@ class LocationLoaded extends LocationState {
 
 /// Failure loading the user's current location
 class LocationFailure extends LocationState {
+  /// The exception that occurred.
   final LocationException exception;
 
   const LocationFailure({@required this.exception});

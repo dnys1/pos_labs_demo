@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../core/enums/biometric_type.dart';
 import '../../core/blocs/login/login_bloc.dart';
+import '../keys.dart';
 import '../widgets/widgets.dart';
 
 class LoginView extends StatelessWidget {
@@ -40,6 +41,7 @@ class LoginView extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   RaisedButton(
+                    key: Keys.loginWithFacebookButton,
                     child: Text('Login with Facebook'),
                     onPressed: () {
                       BlocProvider.of<LoginBloc>(context)
@@ -49,6 +51,7 @@ class LoginView extends StatelessWidget {
                   if (Platform.isIOS && state.biometricType != BiometricType.None) ...[
                     SizedBox(height: 20),
                     RaisedButton(
+                      key: Keys.loginWithBiometricsButton,
                       child:
                           Text('Login with ${state.biometricType.string} ID'),
                       onPressed: () {

@@ -13,6 +13,7 @@ part 'login_event.dart';
 part 'login_state.dart';
 part 'login_method.dart';
 
+/// Handles requests for authenticating the user.
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   AuthService _auth;
 
