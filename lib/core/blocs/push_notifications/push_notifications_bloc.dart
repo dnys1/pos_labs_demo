@@ -25,7 +25,7 @@ class PushNotificationsBloc
 
     // Listen to the stream of notifications and add them to the bloc
     _pushNotificationsService.notificationsStream
-        .listen((Map<String, dynamic> notification) {
+        ?.listen((Map<String, dynamic> notification) {
       add(PushNotificationReceived(notification));
     });
   }
@@ -53,11 +53,13 @@ class PushNotificationsBloc
   /// Requests a push notification using [PushNotificationsService]
   Stream<PushNotificationsState> _mapPushNotificationsRequestToState() async* {
     yield PushNotificationLoading();
-    _logger.fine('_mapPushNotificationsRequestToState: Awaiting request to push notifications service');
+    _logger.fine(
+        '_mapPushNotificationsRequestToState: Awaiting request to push notifications service');
 
     try {
       await _pushNotificationsService.requestPushNotification();
-      _logger.fine('_mapPushNotificationsRequestToState: Push notification successfully requested');
+      _logger.fine(
+          '_mapPushNotificationsRequestToState: Push notification successfully requested');
     } catch (e) {
       _logger.severe('_mapPushNotificationsRequestToState: $e');
     } finally {

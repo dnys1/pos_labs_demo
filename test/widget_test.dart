@@ -56,11 +56,44 @@ void main() {
       // Build the login view
       await buildLoginView(tester);
 
-      // Make sure there are exactly 1 RaisedButton (no login with Touch/Face ID)
+      // Make sure there are the correct number of buttons
       expect(find.byKey(Keys.loginWithFacebookButton), findsOneWidget);
+      expect(find.byKey(Keys.loginWithBiometricsButton), findsOneWidget);
+      expect(find.byKey(Keys.requestPushNotificationButton), findsOneWidget);
+      expect(find.byType(RaisedButton), findsNWidgets(3));
     });
 
-    testWidgets('| Exception thrown', (WidgetTester tester) async {
+    testWidgets('| Touch Biometrics', (WidgetTester tester) async {
+      // Setup mock services for proper bloc flow
+      when(_auth.availableBiometricType)
+          .thenAnswer((_) async => BiometricType.Touch);
+
+      // Build the login view
+      await buildLoginView(tester);
+
+      // Make sure there are the correct number of buttons
+      expect(find.byKey(Keys.loginWithFacebookButton), findsOneWidget);
+      expect(find.byKey(Keys.loginWithBiometricsButton), findsOneWidget);
+      expect(find.byKey(Keys.requestPushNotificationButton), findsOneWidget);
+      expect(find.byType(RaisedButton), findsNWidgets(3));
+    });
+
+    testWidgets('| Face Biometrics', (WidgetTester tester) async {
+      // Setup mock services for proper bloc flow
+      when(_auth.availableBiometricType)
+          .thenAnswer((_) async => BiometricType.Face);
+
+      // Build the login view
+      await buildLoginView(tester);
+
+      // Make sure there are the correct number of buttons
+      expect(find.byKey(Keys.loginWithFacebookButton), findsOneWidget);
+      expect(find.byKey(Keys.loginWithBiometricsButton), findsOneWidget);
+      expect(find.byKey(Keys.requestPushNotificationButton), findsOneWidget);
+      expect(find.byType(RaisedButton), findsNWidgets(3));
+    });
+
+    testWidgets('| Exception', (WidgetTester tester) async {
       // Setup mock services for proper bloc flow
       when(_auth.availableBiometricType)
           .thenAnswer((_) async => BiometricType.None);
@@ -94,7 +127,7 @@ void main() {
       expect(find.byType(FloatingActionButton), findsOneWidget);
     });
 
-    testWidgets('| Location failure', (WidgetTester tester) async {
+    testWidgets('| Exception', (WidgetTester tester) async {
       // Setup location services
       when(_locationService.getUserLocation())
           .thenThrow(LocationException.unknown());
