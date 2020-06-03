@@ -10,8 +10,9 @@ import 'core/services/location_service.dart';
 import 'ui/views/views.dart';
 
 void main() {
+  // Initialize Google Map services (for Directions API)
   GoogleMap.init('AIzaSyDyPsb5fqeIYph4LwKh9VnZEId20inMHC4');
-  WidgetsFlutterBinding.ensureInitialized();
+  
   runApp(POSLabsDemo());
 }
 
@@ -19,9 +20,13 @@ class POSLabsDemo extends StatelessWidget {
   final AuthService _authService;
   final LocationService _locationService;
 
+  /// Optionally set the initial route.
+  final String initialRoute;
+
   POSLabsDemo({
     AuthService authService,
     LocationService locationService,
+    this.initialRoute = '/',
   })  : _authService =
             authService ?? AuthService(localAuth: LocalAuthService()),
         _locationService = locationService ?? LocationService();
@@ -47,6 +52,7 @@ class POSLabsDemo extends StatelessWidget {
           primarySwatch: Colors.blue,
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
+        initialRoute: initialRoute,
         routes: {
           '/': (context) => LoginView(),
           '/map': (context) => MapView(),

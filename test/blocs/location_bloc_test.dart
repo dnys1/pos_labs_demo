@@ -8,9 +8,11 @@ import 'package:pos_labs_demo/core/services/location_service.dart';
 
 class MockLocationService extends Mock implements LocationService {}
 
+/// Mock location = Los Angeles, CA
+Location mockLocation = Location(latitude: 34.052235, longitude: -118.243683);
+
 void main() {
   MockLocationService _locationService;
-  Location mockLocation = Location(latitude: 34.052235, longitude: -118.243683);
 
   setUp(() {
     _locationService = MockLocationService();

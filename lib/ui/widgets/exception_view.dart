@@ -14,22 +14,25 @@ class ExceptionView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Text(
-          'Error',
-          style: Theme.of(context).textTheme.headline5,
-          textAlign: TextAlign.center,
-        ),
-        SizedBox(height: 20),
-        Text(exception.message, textAlign: TextAlign.center),
-        if (tryAgainCallback != null) ...[
+    return Padding(
+      padding: const EdgeInsets.all(15.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            'Error',
+            style: Theme.of(context).textTheme.headline5,
+            textAlign: TextAlign.center,
+          ),
           SizedBox(height: 20),
-          RaisedButton(child: Text('Try Again'), onPressed: tryAgainCallback),
-        ]
-      ],
+          Text(exception.message, textAlign: TextAlign.center),
+          if (tryAgainCallback != null) ...[
+            SizedBox(height: 20),
+            RaisedButton(child: Text('Try Again'), onPressed: tryAgainCallback),
+          ]
+        ],
+      ),
     );
   }
 }

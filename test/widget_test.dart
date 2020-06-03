@@ -6,22 +6,26 @@
 // tree, read text, and verify that the values of widget properties are correct.
 
 import 'package:flutter/material.dart';
+import 'package:flutter_google_maps/flutter_google_maps.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:pos_labs_demo/core/enums/biometric_type.dart';
 
-import 'package:pos_labs_demo/core/services/auth_service.dart';
+import 'package:pos_labs_demo/core/enums/biometric_type.dart';
+import 'package:pos_labs_demo/core/models/models.dart';
 import 'package:pos_labs_demo/main.dart';
 import 'package:pos_labs_demo/ui/keys.dart';
 import 'package:pos_labs_demo/ui/widgets/widgets.dart';
 
-class MockAuthService extends Mock implements AuthService {}
+import 'blocs/location_bloc_test.dart';
+import 'blocs/login_bloc_test.dart';
 
 void main() {
   MockAuthService _auth;
+  MockLocationService _locationService;
 
   setUp(() {
     _auth = MockAuthService();
+    _locationService = MockLocationService();
   });
 
   Future<void> buildLoginView(WidgetTester tester) async {
@@ -32,7 +36,18 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  group('Appropriate number of buttons', () {
+  Future<void> buildMapView(WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(POSLabsDemo(
+      locationService: _locationService,
+      initialRoute: '/map',
+    ));
+
+    // Wait until no more frames are scheduled (true when loading complete)
+    await tester.pumpAndSettle();
+  }
+
+  group('LoginView', () {
     testWidgets('| No Biometrics', (WidgetTester tester) async {
       // Setup mock services for proper bloc flow
       when(_auth.availableBiometricType)
@@ -62,6 +77,34 @@ void main() {
 
       // Expect to find an ExceptionView
       expect(find.byType(ExceptionView), findsOneWidget);
+    });
+  });
+
+  group('MapView', () {
+    testWidgets('| Map loaded successfully', (WidgetTester tester) async {
+      // Setup location services
+      when(_locationService.getUserLocation())
+          .thenAnswer((_) async => mockLocation);
+
+      // Build the map view
+      await buildMapView(tester);
+
+      // Expect to find a GoogleMap and a FloatingActionButton
+      expect(find.byType(GoogleMap), findsOneWidget);
+      expect(find.byType(FloatingActionButton), findsOneWidget);
+    });
+
+    testWidgets('| Location failure', (WidgetTester tester) async {
+      // Setup location services
+      when(_locationService.getUserLocation())
+          .thenThrow(LocationException.unknown());
+
+      // Build the map view
+      await buildMapView(tester);
+
+      // Expect to find an ExceptionView widget
+      expect(find.byType(ExceptionView), findsOneWidget);
+      expect(find.byType(FloatingActionButton), findsNothing);
     });
   });
 }

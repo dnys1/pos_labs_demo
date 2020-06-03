@@ -39,8 +39,8 @@ class _MapViewState extends State<MapView> {
     GoogleMap.of(_mapKey).clearMarkers();
 
     /// Change the directions to display based off
-    /// the user's location, since routing to a location 
-    /// which cannot be accessed by roads will result 
+    /// the user's location, since routing to a location
+    /// which cannot be accessed by roads will result
     /// in a blank map.
     String destination;
     if (_userLocation.locationInNorthAmerica) {
@@ -57,54 +57,60 @@ class _MapViewState extends State<MapView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Maps Demo'),
-      ),
-      body: BlocConsumer<LocationBloc, LocationState>(
-        listener: (context, state) {
-          if (state is LocationLoaded) {
-            setState(() {
-              _userLocation = state.userLocation;
-            });
-          }
-        },
-        builder: (context, state) {
-          if (state is LocationLoading) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          } else if (state is LocationLoaded) {
-            GeoCoord userLocation = GeoCoord(
-              state.userLocation.latitude,
-              state.userLocation.longitude,
-            );
-            return GoogleMap(
-              key: _mapKey,
-              mapType: MapType.roadmap,
-              initialPosition: userLocation,
-              markers: {Marker(userLocation)},
-              mobilePreferences: MobileMapPreferences(
-                myLocationButtonEnabled: false,
-              ),
-            );
-          } else if (state is LocationFailure) {
-            return ExceptionView(
-              state.exception,
-              tryAgainCallback: () {
-                BlocProvider.of<LocationBloc>(context).add(LocationStarted());
-              },
-            );
-          } else {
-            throw UnimplementedError('Invalid LocationState: $state');
-          }
-        },
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _userLocation != null ? _addRoute : null,
-        label: Text('Route to Los Angeles!'),
-        icon: Icon(Icons.directions),
-      ),
+    return BlocConsumer<LocationBloc, LocationState>(
+      listener: (context, state) {
+        if (state is LocationLoaded) {
+          setState(() {
+            _userLocation = state.userLocation;
+          });
+        }
+      },
+      builder: (context, state) {
+        Widget body;
+
+        if (state is LocationLoading) {
+          body = Center(
+            child: CircularProgressIndicator(),
+          );
+        } else if (state is LocationLoaded) {
+          GeoCoord userLocation = GeoCoord(
+            state.userLocation.latitude,
+            state.userLocation.longitude,
+          );
+          body = GoogleMap(
+            key: _mapKey,
+            mapType: MapType.roadmap,
+            initialPosition: userLocation,
+            markers: {Marker(userLocation)},
+            mobilePreferences: MobileMapPreferences(
+              myLocationButtonEnabled: false,
+            ),
+          );
+        } else if (state is LocationFailure) {
+          body = ExceptionView(
+            state.exception,
+            tryAgainCallback: () {
+              BlocProvider.of<LocationBloc>(context).add(LocationStarted());
+            },
+          );
+        } else {
+          throw UnimplementedError('Invalid LocationState: $state');
+        }
+
+        return Scaffold(
+          appBar: AppBar(
+            title: Text('Maps Demo'),
+          ),
+          body: body,
+          floatingActionButton: state is LocationLoaded
+              ? FloatingActionButton.extended(
+                  onPressed: _userLocation != null ? _addRoute : null,
+                  label: Text('Route to Los Angeles!'),
+                  icon: Icon(Icons.directions),
+                )
+              : null,
+        );
+      },
     );
   }
 }
