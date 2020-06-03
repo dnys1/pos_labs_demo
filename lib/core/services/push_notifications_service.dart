@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -27,8 +28,7 @@ class PushNotificationsService {
 
   /// Configure push notifications for this device.
   Future<void> configure() async {
-    bool requestSucceeded =
-        await _firebaseMessaging.requestNotificationPermissions(
+    await _firebaseMessaging.requestNotificationPermissions(
       const IosNotificationSettings(
         sound: true,
         badge: true,
@@ -36,15 +36,13 @@ class PushNotificationsService {
         provisional: false,
       ),
     );
-    if (requestSucceeded ?? false) {
-      _firebaseMessaging.configure(
-        onMessage: _onMessage,
-      );
-      _firebaseMessaging.onTokenRefresh.listen((token) {
-        _token = token;
-      });
-      _token = await _firebaseMessaging.getToken();
-    }
+    _firebaseMessaging.configure(
+      onMessage: _onMessage,
+    );
+    _firebaseMessaging.onTokenRefresh.listen((token) {
+      _token = token;
+    });
+    _token = await _firebaseMessaging.getToken();
   }
 
   /// Fires when a notification is received and the application is open and awake.

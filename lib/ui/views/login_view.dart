@@ -40,76 +40,7 @@ class LoginView extends StatelessWidget {
                 child: CircularProgressIndicator(),
               );
             } else if (state is LoginInitial) {
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  RaisedButton(
-                    key: Keys.loginWithFacebookButton,
-                    child: Text('Login with Facebook'),
-                    onPressed: () {
-                      BlocProvider.of<LoginBloc>(context)
-                          .add(LoginInitiated(method: LoginMethod.Facebook));
-                    },
-                  ),
-                  if (Platform.isIOS &&
-                      state.biometricType != BiometricType.None) ...[
-                    SizedBox(height: 20),
-                    RaisedButton(
-                      key: Keys.loginWithBiometricsButton,
-                      child:
-                          Text('Login with ${state.biometricType.string} ID'),
-                      onPressed: () {
-                        BlocProvider.of<LoginBloc>(context)
-                            .add(LoginInitiated(method: LoginMethod.Local));
-                      },
-                    ),
-                  ],
-                  SizedBox(height: 20),
-                  BlocConsumer<PushNotificationsBloc, PushNotificationsState>(
-                    listener: (context, state) {
-                      // Show a SnackBar when a push notification is received
-                      if (state is PushNotificationLoaded) {
-                        Scaffold.of(context).showSnackBar(SnackBar(
-                          duration: const Duration(seconds: 5),
-                          content: Text('Push notification received'),
-                          action: SnackBarAction(
-                            label: 'Show data',
-                            onPressed: () {
-                              showDialog(
-                                context: context,
-                                child: PushNotificationsDialog(state.data),
-                              );
-                            },
-                          ),
-                        ));
-                      }
-                    },
-                    builder: (context, state) {
-                      bool buttonEnabled;
-                      if (state is PushNotificationsInitial ||
-                          state is PushNotificationLoaded) {
-                        buttonEnabled = true;
-                      } else if (state is PushNotificationLoading) {
-                        buttonEnabled = false;
-                      } else {
-                        throw UnimplementedError(
-                            'Invalid PushNotificationsState: $state');
-                      }
-                      return RaisedButton(
-                        key: Keys.requestPushNotificationButton,
-                        child: Text('Request Push Notification'),
-                        onPressed: buttonEnabled
-                            ? () {
-                                BlocProvider.of<PushNotificationsBloc>(context)
-                                    .add(PushNotificationsRequest());
-                              }
-                            : null,
-                      );
-                    },
-                  ),
-                ],
-              );
+              return _LoginBody(biometricType: state.biometricType);
             } else if (state is LoginFailure) {
               return ExceptionView(
                 state.exception,
@@ -123,6 +54,94 @@ class LoginView extends StatelessWidget {
           },
         ),
       ),
+    );
+  }
+}
+
+class _LoginBody extends StatelessWidget {
+  final BiometricType biometricType;
+
+  const _LoginBody({
+    Key key,
+    @required this.biometricType,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        RaisedButton(
+          key: Keys.loginWithFacebookButton,
+          child: Text('Login with Facebook'),
+          onPressed: () {
+            BlocProvider.of<LoginBloc>(context)
+                .add(LoginInitiated(method: LoginMethod.Facebook));
+          },
+        ),
+        // Android will return BiometricType.None
+        // Show Biometrics button anyway. It will 
+        // default to the correct biometric type 
+        // for the device.
+        if (Platform.isAndroid ||
+            biometricType != BiometricType.None) ...[
+          SizedBox(height: 20),
+          RaisedButton(
+            key: Keys.loginWithBiometricsButton,
+            child: Text(Platform.isIOS
+                ? 'Login with ${biometricType.string} ID'
+                : 'Login with Biometrics'),
+            onPressed: () {
+              BlocProvider.of<LoginBloc>(context)
+                  .add(LoginInitiated(method: LoginMethod.Local));
+            },
+          ),
+        ],
+        SizedBox(height: 20),
+        BlocConsumer<PushNotificationsBloc, PushNotificationsState>(
+          listener: (context, state) {
+            // Show a SnackBar when a push notification is received
+            if (state is PushNotificationLoaded) {
+              Scaffold.of(context).showSnackBar(SnackBar(
+                duration: const Duration(seconds: 5),
+                content: Text('Push notification received'),
+                action: SnackBarAction(
+                  label: 'Show data',
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      child: PushNotificationsDialog(state.data),
+                    );
+                  },
+                ),
+              ));
+            }
+          },
+          builder: (context, state) {
+            bool fabEnabled;
+            if (state is PushNotificationsInitial ||
+                state is PushNotificationLoaded) {
+              fabEnabled = true;
+            } else if (state is PushNotificationLoading) {
+              fabEnabled = false;
+            } else {
+              throw UnimplementedError(
+                  'Invalid PushNotificationsState: $state');
+            }
+            return RaisedButton(
+              key: Keys.requestPushNotificationButton,
+              child: Text('Request Push Notification'),
+              onPressed: fabEnabled
+                  ? () {
+                      BlocProvider.of<PushNotificationsBloc>(context)
+                          .add(PushNotificationsRequest());
+                    }
+                  : null,
+            );
+          },
+        ),
+      ],
     );
   }
 }

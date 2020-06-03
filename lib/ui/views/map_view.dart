@@ -84,6 +84,7 @@ class _MapViewState extends State<MapView> {
             markers: {Marker(userLocation)},
             mobilePreferences: MobileMapPreferences(
               myLocationButtonEnabled: false,
+              mapToolbarEnabled: false,
             ),
           );
         } else if (state is LocationFailure) {
