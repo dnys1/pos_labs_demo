@@ -1,16 +1,20 @@
-# pos_labs_demo
+# Assignment
 
-A new Flutter project.
+**Task 1**
 
-## Getting Started
+- Sign up with Facebook/Instagram
+- Touch ID Login
 
-This project is a starting point for a Flutter application.
+**Task 2**
 
-A few resources to get you started if this is your first Flutter project:
+After Login needs to do the following task
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+- Capture the current location
+- Draw a route on the map to a random destination
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+**Task 3**
+- Push notification Integration
+
+Use the material Design and the BloC Pattern
+
+Please Note : You have to follow a Proper pattern while working on this assignment and put proper comments. If you do not follow a proper pattern the code will get rejected 
