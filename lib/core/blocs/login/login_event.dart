@@ -8,7 +8,7 @@ abstract class LoginEvent extends Equatable {
 }
 
 /// Loads the login configuration upon app loading.
-class AppLoaded extends LoginEvent {}
+class LoginStarted extends LoginEvent {}
 
 /// Initiates a new login request.
 class LoginInitiated extends LoginEvent {

@@ -17,13 +17,13 @@ void main() {
       .thenAnswer((_) async => BiometricType.None);
   });
 
-  group('AppLoaded', () {
+  group('LoginStarted', () {
     blocTest(
       '| Success',
       build: () async {
         return LoginBloc(auth: _auth);
       },
-      act: (bloc) => bloc.add(AppLoaded()),
+      act: (bloc) => bloc.add(LoginStarted()),
       expect: [LoginInitial(biometricType: BiometricType.None)],
     );
   });
@@ -36,7 +36,7 @@ void main() {
         return LoginBloc(auth: _auth);
       },
       act: (bloc) async {
-        bloc.add(AppLoaded());
+        bloc.add(LoginStarted());
         bloc.add(LoginInitiated(method: LoginMethod.Facebook));
       },
       expect: [
@@ -53,7 +53,7 @@ void main() {
         return LoginBloc(auth: _auth);
       },
       act: (bloc) async {
-        bloc.add(AppLoaded());
+        bloc.add(LoginStarted());
         bloc.add(LoginInitiated(method: LoginMethod.Facebook));
       },
       expect: [
@@ -70,7 +70,7 @@ void main() {
         return LoginBloc(auth: _auth);
       },
       act: (bloc) async {
-        bloc.add(AppLoaded());
+        bloc.add(LoginStarted());
         bloc.add(LoginInitiated(method: LoginMethod.Facebook));
       },
       expect: [
@@ -87,7 +87,7 @@ void main() {
         return LoginBloc(auth: _auth);
       },
       act: (bloc) async {
-        bloc.add(AppLoaded());
+        bloc.add(LoginStarted());
         bloc.add(LoginInitiated(method: LoginMethod.Local));
       },
       expect: [
@@ -104,7 +104,7 @@ void main() {
         return LoginBloc(auth: _auth);
       },
       act: (bloc) async {
-        bloc.add(AppLoaded());
+        bloc.add(LoginStarted());
         bloc.add(LoginInitiated(method: LoginMethod.Local));
       },
       expect: [
@@ -121,7 +121,7 @@ void main() {
         return LoginBloc(auth: _auth);
       },
       act: (bloc) async {
-        bloc.add(AppLoaded());
+        bloc.add(LoginStarted());
         bloc.add(LoginInitiated(method: LoginMethod.Local));
       },
       expect: [

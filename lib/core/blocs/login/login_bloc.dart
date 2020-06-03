@@ -5,12 +5,12 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
 
+import '../../models/models.dart';
 import '../../services/auth_service.dart';
 import '../../enums/biometric_type.dart';
 
 part 'login_event.dart';
 part 'login_state.dart';
-part 'login_exception.dart';
 part 'login_method.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
@@ -28,7 +28,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   Stream<LoginState> mapEventToState(
     LoginEvent event,
   ) async* {
-    if (event is AppLoaded) {
+    if (event is LoginStarted) {
       yield LoginInitial(
         biometricType: await _auth.availableBiometricType,
       );
@@ -41,6 +41,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     }
   }
 
+  /// Login the user using [AuthenticationService]
   Stream<LoginState> _mapLoginInitiatedToState({LoginMethod method}) async* {
     yield LoginLoading();
 
@@ -68,6 +69,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           code: e.code,
         ),
       );
+    } on LoginException catch (e) {
+      yield LoginFailure(exception: e);
     } catch (e) {
       yield LoginFailure.unknown();
     }

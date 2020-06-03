@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../core/enums/biometric_type.dart';
 import '../../core/blocs/login/login_bloc.dart';
+import '../widgets/widgets.dart';
 
 class LoginView extends StatelessWidget {
   @override
@@ -59,25 +60,11 @@ class LoginView extends StatelessWidget {
                 ],
               );
             } else if (state is LoginFailure) {
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    'Error',
-                    style: Theme.of(context).textTheme.headline5,
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: 20),
-                  Text(state.exception.message, textAlign: TextAlign.center),
-                  SizedBox(height: 20),
-                  RaisedButton(
-                    child: Text('Try Again'),
-                    onPressed: () {
-                      BlocProvider.of<LoginBloc>(context).add(LoginCleared());
-                    },
-                  ),
-                ],
+              return ExceptionView(
+                state.exception,
+                tryAgainCallback: () {
+                  BlocProvider.of<LoginBloc>(context).add(LoginCleared());
+                },
               );
             } else {
               throw UnimplementedError('$state is not a valid LoginState');

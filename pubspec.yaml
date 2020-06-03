@@ -34,8 +34,9 @@ dependencies:
   firebase_auth: ^0.16.1
   flutter_bloc: ^4.0.0
   flutter_facebook_login: ^3.0.0
-  google_maps_flutter: ^0.5.28
+  flutter_google_maps: ^3.7.1
   local_auth: ^0.6.2
+  location: ^3.0.2
 
 dev_dependencies:
   flutter_test:
